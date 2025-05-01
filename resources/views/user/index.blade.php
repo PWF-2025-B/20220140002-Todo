@@ -63,17 +63,54 @@
                         <td class="px-6 py-4">{{ $user->id }}</td>
                         <td class="px-6 py-4">{{ $user->name }}</td>
                         <td class="px-6 py-4">{{ $user->email }}</td>
-                        <td class="px-6 py-4">
-                            @if ($user->is_active)
-                                Active
-                            @else
-                                Inactive
-                            @endif
-                        </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <a href="{{ route('users.show', $user->id) }}" class="text-blue-500 hover:underline">Show</a>
+                                        <p>
+                                            {{ $user->todos->count() }}
+                                            <span>
+                                                <span class="text-green-600 dark:text-green-400">
+                                                    ({{ $user->todos->where('is_complete', true)->count() }}
+                                                </span>
+                                                /
+                                                <span class="text-blue-600 dark:text-blue-400">
+                                                    {{ $user->todos->where('is_complete', false)->count() }})
+                                                </span>
+                                            </span>
+                                        </p>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">                        
+                            <div class="flex space-x-3">
+                                {{-- Action here --}}
+                                @if ($user->is_admin)
+                                <form action="{{ route('user.removeadmin', $user) }}" method="Post">
+                                    @csrf 
+                                    @method('PATCH')
+                                    <button type='submit'
+                                        class="text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                                                                            Remove Admin
+                                    </button>
+                                </form>
+                                @else
+                                <form action="{{ route('user.makeadmin', $user) }}" method="Post">
+                                    @csrf 
+                                    @method('PATCH')
+                                    <button type="submit"
+                                        class="text-red-600 dark:text-red-400 whitespace-nowrap">
+                                                                            Make Admin
+                                    </button>
+                                </form>
+                                @endif
+                                <form action="{{ route('user.destroy', $user)}}" method="Post">
+                                    @csrf 
+                                    @method('delete')
+                                    <button type="submit"
+                                        class="text-red-600 dark:text-red-400 whitespace-nowrap">
+                                                                            Delete
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
+                    
                 @endforeach
             </tbody>
         </table>
@@ -84,9 +121,13 @@
             </div>
         @endif
     </div>
+    
 
     {{-- Pagination --}}
     <div class="mt-4 px-6">
         {{ $users->links() }}
+        
     </div>
+    
+
 </x-app-layout>
