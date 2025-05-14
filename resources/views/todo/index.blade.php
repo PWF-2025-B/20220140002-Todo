@@ -39,6 +39,9 @@
                             <th scope="col" class="px-6 py-3">
                                 Title
                             </th>
+                            <th scope="col" class="px-6 py-3">
+                                Category
+                            </th>
                             <th scope="col" class="px-6 py-3"> 
                                 Status
                             </th>
@@ -54,6 +57,17 @@
                                     <a href="{{ route('todo.edit', $todo) }}" class="hover:underline">
                                         {{ $todo->tittle }}
                                     </a>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if ($todo->category)
+                                        <span class="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">
+                                            {{ $todo->category->title }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                                            No Category
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4"> 
                                     @if ($todo->is_complete==false)
@@ -91,11 +105,10 @@
                                         @method('DELETE')
                                         <button type="submit"
                                             class="text-red-600 dark:text-red-400">
-                                                                                Delete
+                                            Delete
                                         </button>
                                     </form>
                                 </div>
-
                                 </td>
                             </tr>
                         @empty
@@ -103,6 +116,9 @@
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                     Empty
                                 </td>
+                                <td class="px-6 py-4"></td>
+                                <td class="px-6 py-4"></td>
+                                <td class="px-6 py-4"></td>
                             </tr>
                         @endforelse
                     </tbody>
