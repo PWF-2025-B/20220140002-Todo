@@ -10,24 +10,22 @@ class UserController extends Controller
     public function index()
     {
         $search = request('search');
-
-        if ($search) {
-            $users = User::where(function ($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%')
-                          ->orWhere('email', 'like', '%' . $search . '%');
-                })
-                ->orderBy('name')
-                ->where('id', '!=', '1')
-                ->paginate(20)
-                ->withQueryString(); // supaya pagination tetap membawa query search
-        } else {
-            $users = User::where('id', '!=', '1')
-                        ->orderBy('name')
-                        ->paginate(10);
-        }
-
+    
+        $users = User::with('todos')
+            ->where('id', '!=', 1)
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%')
+                      ->orWhere('email', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderBy('name')
+            ->paginate(10);
+    
         return view('user.index', compact('users'));
     }
+    
+
 
     public function destroy(User $user)
     {
